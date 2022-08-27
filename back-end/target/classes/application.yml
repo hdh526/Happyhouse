@@ -1,0 +1,9 @@
+spring:
+  mail:
+    host: smtp.naver.com
+    port: 587
+    username: hdh526@naver.com
+    password: aldald0013
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
