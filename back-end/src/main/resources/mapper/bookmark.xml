@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.happyhouse.model.mapper.BookMarkMapper">
+
+<select id="selectBookmarkHouse" parameterType="string" resultType="BookMarkHouseDto">
+	select * from bookmark_houseinfo where mb_id=#{mb_id}
+</select>
+
+<insert id="insertBookmarkHouse" parameterType="hashMap">
+	insert into bookmark_houseinfo (mb_id, apt_code) values (#{mb_id}, #{apt_code})
+</insert>
+
+<delete id="deleteBookmarkHouse" parameterType="hashMap">
+	delete from bookmark_houseinfo where mb_id = #{mb_id} and apt_code = #{apt_code}
+</delete>
+
+</mapper>

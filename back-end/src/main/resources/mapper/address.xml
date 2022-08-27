@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.happyhouse.model.mapper.HouseMapMapper">
+	<select id="getSido" resultType="SidoGugunCodeDto">
+		select left(sidoCode,2) sidoCode, sidoName
+		from sidocode
+		order by sidoCode
+	</select>
+	
+	<select id="getGugunInSido" parameterType="string" resultType="SidoGugunCodeDto">
+		select left(gugunCode,5) gugunCode, gugunName
+		from guguncode
+		where left(gugunCode,2) = #{sido}
+		order by gugunCode
+	</select>
+	
+	<select id="getDongInGugun" parameterType="string" resultType="SidoGugunCodeDto">
+		select distinct dongName, dongCode
+		from dongcode
+		where left(dongCode, 5) = #{gugun}
+		order by dongName
+	</select>
+	
+	<select id="getLocationName" parameterType="string" resultType="SidoGugunCodeDto">
+		select *
+		from dongcode
+		where dongCode = #{dong};
+	
+	</select>
+	
+	<select id="getAptInDong" parameterType="string" resultType="HouseInfoDto">
+		select aptCode, buildYear, dong, sigunguCode, dongCode, apartmentName, jibun, lng, lat from houseinfo where dongCode = #{dongCode}
+	</select>
+	
+	<select id="getAptByName" parameterType="hashMap" resultType="HouseInfoDto">
+		select aptCode, buildYear, dong, sigunguCode, dongCode, apartmentName, jibun, lng, lat from houseinfo
+		where apartmentName like concat('%', #{name}, '%')
+		order by aptCode
+	</select>
+	
+	<select id="getAptByNamSido" parameterType="hashMap" resultType="HouseInfoDto">
+		select aptCode, buildYear, dong, sigunguCode, dongCode, apartmentName, jibun, lng, lat from houseinfo
+		where apartmentName like concat('%', #{name}, '%')
+		and sigunguCode like concat(#{sido}, '%')
+		order by aptCode
+	</select>
+	
+	<select id="getAptByNameGugun" parameterType="hashMap" resultType="HouseInfoDto">
+		select aptCode, buildYear, dong, sigunguCode, dongCode, apartmentName, jibun, lng, lat from houseinfo
+		where apartmentName like concat('%', #{name}, '%')
+		and sigunguCode like #{gugun}
+		order by aptCode
+	</select>
+	
+	
+	<select id="getAptByNameDong" parameterType="hashMap" resultType="HouseInfoDto">
+		select aptCode, buildYear, dong, sigunguCode, dongCode, apartmentName, jibun, lng, lat from houseinfo
+		where apartmentName like concat('%', #{name}, '%')
+		and dongCode like #{dong}
+		order by aptCode
+	</select>
+	
+	<select id="getAptDeal" parameterType="long" resultType="HouseDealDto" >
+		select no, aptCode, dealAmount, dealYear, dealMonth, dealDay, area, floor
+		from housedeal
+		where aptCode = #{aptCode}
+	</select>
+	
+	<select id="getHouseByAptCode" parameterType="long" resultType="HouseInfoDto">
+		select * from houseinfo where aptCode=#{aptCode}
+	</select>
+	
+	<select id="getAvgByArea" parameterType="long" resultType="DealAmountDto">
+		select * from avg_by_area where aptCode=#{aptCode}
+	</select>
+	
+	<select id="getAvgByYear" parameterType="long" resultType="DealAmountDto">
+		select * from avg_by_year where aptCode=#{aptCode}
+	</select>
+	
+	<select id="getAvgByDong" parameterType="string" resultType="DealAmountDto">
+		select * from avg_by_dong where dongCode=#{dong}
+	</select>
+	
+	<select id="selectIsSearchApt" parameterType="long" resultType="int">
+		select count(*) from count_search_apt where aptCode=#{aptCode}
+	</select>
+	<update id="updateIsSearchApt" parameterType="long">
+		update count_search_apt set count = count + 1 where aptCode=#{aptCode}
+	</update>
+	<insert id="insertIsSearchApt" parameterType="long">
+		insert into count_search_apt (aptCode) values (#{aptCode})
+	</insert>
+	
+	<select id="getRecommend" parameterType="string" resultType="SidoGugunCodeDto">
+		SELECT a.dongCode, a.img, dc.sidoName, dc.gugunName, dc.dongName
+  FROM (select rtd.rt_idx, rt.typetxt, rtd.dongCode, rtd.img
+          from recommend_type_dong as rtd LEFT OUTER JOIN recommend_type AS rt ON rtd.rt_idx = rt.idx) AS a
+	    LEFT OUTER JOIN dongcode AS dc ON a.dongCode = dc.dongcode where rt_idx=#{idx}
+	</select>
+	
+	<select id="getTopApt" resultType="HouseInfoDto">
+	SELECT hi.aptCode, hi.buildYear, hi.dong, hi.sigunguCode, hi.dongCode, hi.apartmentName, hi.jibun, hi.lng, hi.lat
+  FROM count_search_apt AS csa LEFT OUTER JOIN houseinfo AS hi ON csa.aptCode = hi.aptCode
+ ORDER BY csa.count DESC 
+ LIMIT 5;
+	</select>
+	
+</mapper>

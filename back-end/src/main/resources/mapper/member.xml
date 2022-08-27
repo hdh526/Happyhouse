@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.model.mapper.MemberMapper">
+
+	<select id="login" parameterType="hashMap" resultType="memberDto">
+		select name, id, phone, email
+		from members
+		where id = #{id} and password = #{password}
+	</select>
+	
+	<select id="userInfo" parameterType="String" resultType="memberDto">
+		select *
+		from members
+		where id = #{id}
+	</select>
+
+	<select id="idCheck" parameterType="String" resultType="int">
+		select count(id)
+		from members
+		where id = #{id}
+	</select>
+
+	<insert id="insert" parameterType="MemberDto">
+		insert into members (id, password, name, phone, email)
+		values (#{id}, #{password}, #{name}, #{phone}, #{email})
+	</insert>
+	
+	<insert id="naverLogin" parameterType="MemberDto">
+		insert ignore into members (id, password, name, phone, email)
+		values (#{id}, #{password}, #{name}, #{phone}, #{email})
+	</insert>
+
+	<select id="selectAll" resultType="memberDto">
+		select id, password, name, phone, email
+		from members
+	</select>
+	
+	<select id="select" parameterType="String" resultType="memberdto">
+		select *
+		from members
+		where id = #{id}
+	</select>
+	
+	<update id="update" parameterType="MemberDto">
+		update members
+		<trim prefix="set" suffixOverrides=",">
+			<if test="password != null">password = #{password},</if>
+			<if test="name != null">name = #{name},</if>
+			<if test="phone != null">phone = #{phone},</if>
+			<if test="email != null">email = #{email},</if>
+		</trim>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete" parameterType="String">
+		delete from members
+		where id = #{id}
+	</delete>
+	
+	<select id="Check" parameterType="String" resultType="int">
+		select count(*)
+		from members
+		where id = #{id}
+	</select>
+	
+	<update id="updateType" parameterType="hashMap">
+		update members set type = #{type} where id=#{id}
+	</update>
+	
+	<select id="getType" parameterType="int" resultType="RecommendDto">
+		select * from recommend_type where idx = #{idx}
+	</select>
+	
+	<select id="selectByEmail" parameterType="string" resultType="MemberDto">
+		select * from members where email = #{email}
+	</select>
+
+	<update id="updateUserPassword" parameterType="MemberDto">
+		update members 
+		set password = #{password}
+		 where id = #{id} 
+	</update>
+</mapper>
